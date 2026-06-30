@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>getRelativePosition() Demo</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: "Signika Negative", Arial, sans-serif;
+            font-weight: 300;
+            padding: 5px 15px;
+        }
+
+        #dot {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 16px;
+            height: 16px;
+            background-color: red;
+            border-radius: 50%;
+        }
+
+        #dot-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 50px;
+            border: 2px solid green;
+
+        }
+
+        #outer {
+            width: 500px;
+            height: 350px;
+            background-color: #444;
+        }
+
+        #middle {
+            width: 300px;
+            height: 200px;
+            background-color: #656565;
+        }
+
+        #inner {
+            width: 100px;
+            height: 60px;
+            background-color: #ccc;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>GSAP 3 getRelativePosition() Demo</h1>
+    <div id="outer">
+        <div id="middle">
+            <div id="inner"></div>
+        </div>
+    </div>
+    <div id="dot-container">
+        <div id="dot"></div>
+    </div>
+
+    <link href='//fonts.googleapis.com/css?family=Signika+Negative:300,400' rel='stylesheet' type='text/css'>
+    <script src='https://unpkg.co/gsap@3/dist/gsap.min.js'></script>
+    <script src='https://unpkg.com/gsap@3/dist/MotionPathPlugin.min.js'></script>
+    <script>
+        // The red dot goes to the center of the light rectangle even though it's nested inside multiple elements with various transforms applied!
+
+        // First, let's add some wacky transforms to every element (nested!)
+        var tl = gsap.timeline({ defaults: { duration: 1, delay: 0.5, ease: "power1.inOut" } })
+            .to("#outer", { xPercent: 50, yPercent: 20, rotation: -20, y: -80 })
+            .to("#middle", { x: 100, y: 50, scale: 0.7, rotation: 60 })
+            .to("#inner", { x: 140, y: 100, transformOrigin: "50% 50%", rotation: 40 })
+            .to("#dot-container", { x: 50, y: 80, scale: 0.5, rotation: -25 })
+            .call(function () {
+                // RED DOT MOVEMENT:
+                var inner = document.querySelector("#inner"),
+                    dot = document.querySelector("#dot"),
+                    delta = MotionPathPlugin.getRelativePosition(dot, inner, [0.5, 0.5], [0.5, 0.5]);
+                gsap.to(dot, {
+                    x: "+=" + delta.x,
+                    y: "+=" + delta.y,
+                    duration: 2,
+                    delay: 1,
+                    repeat: -1,
+                    yoyo: true,
+                    repeatDelay: 1,
+                    ease: "power2.inOut"
+                });
+            });
+    </script>
+
+</body>
+
+</html>
